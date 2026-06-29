@@ -1,0 +1,20 @@
+services:
+  mitmproxy:
+    image: mitmproxy/mitmproxy
+    container_name: mitmproxy
+    restart: unless-stopped
+    network_mode: host
+    mem_limit: 200mb
+    volumes:
+      - ./request_deduplicator.py:/tmp/request_deduplicator.py
+    command:
+      - mitmdump
+      - --set
+      - 'block_global=false'
+      - --verbose
+      - --mode
+      - reverse:http://127.0.0.1:80
+      - --scripts
+      - /tmp/request_deduplicator.py
+      - --listen-port
+      - '8080'
